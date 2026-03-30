@@ -1,0 +1,382 @@
+{
+  "languages": [
+    {
+      "code": "zh",
+      "label": "中文"
+    },
+    {
+      "code": "en",
+      "label": "English"
+    }
+  ],
+  "ui": {
+    "zh": {
+      "title": "大五人格问卷（BFI-2）",
+      "scale": [
+        "非常不同意",
+        "不太同意",
+        "态度中立",
+        "比较同意",
+        "非常同意"
+      ],
+      "legend": "评分说明：",
+      "progress": "已完成",
+      "progressOf": "题",
+      "answered": "已作答：",
+      "reset": "重置",
+      "submit": "提交问卷",
+      "exportBtn": "导出 JSON",
+      "closeBtn": "关闭",
+      "resultTitle": "问卷结果",
+      "resultSummary": "综合 POMP 分：{pomp} / 100",
+      "resultDisclaimer": "本结果仅供参考，不构成任何心理评估或诊断意见。如需专业心理健康支持，请咨询持证心理专业人士。",
+      "domainSectionTitle": "五大维度得分（POMP 0–100）",
+      "facetSectionTitle": "细项维度",
+      "highScoreLabel": "高分：",
+      "lowScoreLabel": "低分：",
+      "expandFacets": "展开 ▶",
+      "collapseFacets": "收起 ▼",
+      "colQ": "题号",
+      "colText": "题目",
+      "colScore": "得分",
+      "alertIncomplete": "还有 {n} 道题目未作答，请完成所有题目后再提交。",
+      "confirmReset": "确定要重置所有答案吗？",
+      "exportFile": "questionnaire_scores.json"
+    },
+    "en": {
+      "title": "Big Five Inventory–2 (BFI-2)",
+      "scale": [
+        "Disagree strongly",
+        "Disagree a little",
+        "Neutral; no opinion",
+        "Agree a little",
+        "Agree strongly"
+      ],
+      "legend": "Scale: ",
+      "progress": "Completed",
+      "progressOf": "questions",
+      "answered": "Answered: ",
+      "reset": "Reset",
+      "submit": "Submit",
+      "exportBtn": "Export JSON",
+      "closeBtn": "Close",
+      "resultTitle": "Results",
+      "resultSummary": "Overall POMP Score: {pomp} / 100",
+      "resultDisclaimer": "These results are for reference only and do not constitute psychological assessment or diagnosis. For professional mental health support, please consult a licensed professional.",
+      "domainSectionTitle": "Five Domain Scores (POMP 0–100)",
+      "facetSectionTitle": "Facet Scores",
+      "highScoreLabel": "Higher scores: ",
+      "lowScoreLabel": "Lower scores: ",
+      "expandFacets": "Show details ▶",
+      "collapseFacets": "Hide details ▼",
+      "colQ": "No.",
+      "colText": "Question",
+      "colScore": "Score",
+      "alertIncomplete": "{n} question(s) unanswered. Please complete all questions before submitting.",
+      "confirmReset": "Reset all answers?",
+      "exportFile": "questionnaire_scores.json"
+    }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "zh": "性格外向，喜欢交际",
+      "en": "Is outgoing, sociable."
+    },
+    {
+      "id": 2,
+      "zh": "心肠柔软，有同情心",
+      "en": "Is compassionate, has a soft heart."
+    },
+    {
+      "id": 3,
+      "zh": "缺乏条理",
+      "en": "Tends to be disorganized."
+    },
+    {
+      "id": 4,
+      "zh": "从容，善于处理压力",
+      "en": "Is relaxed, handles stress well."
+    },
+    {
+      "id": 5,
+      "zh": "对艺术没有什么兴趣",
+      "en": "Has few artistic interests."
+    },
+    {
+      "id": 6,
+      "zh": "性格坚定自信，敢于表达自己的观点",
+      "en": "Has an assertive personality."
+    },
+    {
+      "id": 7,
+      "zh": "为人恭谦，尊重他人",
+      "en": "Is respectful, treats others with respect."
+    },
+    {
+      "id": 8,
+      "zh": "比较懒",
+      "en": "Tends to be lazy."
+    },
+    {
+      "id": 9,
+      "zh": "经历挫折后仍能保持积极心态",
+      "en": "Stays optimistic after experiencing a setback."
+    },
+    {
+      "id": 10,
+      "zh": "对许多不同的事物都感兴趣",
+      "en": "Is curious about many different things."
+    },
+    {
+      "id": 11,
+      "zh": "很少觉得兴奋或者特别想要（做）什么",
+      "en": "Rarely feels excited or eager."
+    },
+    {
+      "id": 12,
+      "zh": "常常挑别人的毛病",
+      "en": "Tends to find fault with others."
+    },
+    {
+      "id": 13,
+      "zh": "可信赖的，可靠的",
+      "en": "Is dependable, steady."
+    },
+    {
+      "id": 14,
+      "zh": "喜怒无常，情绪起伏较多",
+      "en": "Is moody, has up and down mood swings."
+    },
+    {
+      "id": 15,
+      "zh": "善于创造，能找到聪明的方法来做事",
+      "en": "Is inventive, finds clever ways to do things."
+    },
+    {
+      "id": 16,
+      "zh": "比较安静",
+      "en": "Tends to be quiet."
+    },
+    {
+      "id": 17,
+      "zh": "对他人没有什么同情心",
+      "en": "Feels little sympathy for others."
+    },
+    {
+      "id": 18,
+      "zh": "做事有计划有条理",
+      "en": "Is systematic, likes to keep things in order."
+    },
+    {
+      "id": 19,
+      "zh": "容易紧张",
+      "en": "Can be tense."
+    },
+    {
+      "id": 20,
+      "zh": "着迷于艺术、音乐或文学",
+      "en": "Is fascinated by art, music, or literature."
+    },
+    {
+      "id": 21,
+      "zh": "常常处于主导地位，像个领导一样",
+      "en": "Is dominant, acts as a leader."
+    },
+    {
+      "id": 22,
+      "zh": "常与他人意见不和",
+      "en": "Starts arguments with others."
+    },
+    {
+      "id": 23,
+      "zh": "很难开始行动起来去完成一项任务",
+      "en": "Has difficulty getting started on tasks."
+    },
+    {
+      "id": 24,
+      "zh": "觉得有安全感，对自己满意",
+      "en": "Feels secure, comfortable with self."
+    },
+    {
+      "id": 25,
+      "zh": "不喜欢知识性或者哲学性强的讨论",
+      "en": "Avoids intellectual, philosophical discussions."
+    },
+    {
+      "id": 26,
+      "zh": "不如别人有活力",
+      "en": "Is less active than other people."
+    },
+    {
+      "id": 27,
+      "zh": "宽宏大量",
+      "en": "Has a forgiving nature."
+    },
+    {
+      "id": 28,
+      "zh": "有时比较没有责任心",
+      "en": "Can be somewhat careless."
+    },
+    {
+      "id": 29,
+      "zh": "情绪稳定，不易生气",
+      "en": "Is emotionally stable, not easily upset."
+    },
+    {
+      "id": 30,
+      "zh": "几乎没有什么创造性",
+      "en": "Has little creativity."
+    },
+    {
+      "id": 31,
+      "zh": "有时会害羞，比较内向",
+      "en": "Is sometimes shy, introverted."
+    },
+    {
+      "id": 32,
+      "zh": "乐于助人，待人无私",
+      "en": "Is helpful and unselfish with others."
+    },
+    {
+      "id": 33,
+      "zh": "习惯让事物保持整洁有序",
+      "en": "Keeps things neat and tidy."
+    },
+    {
+      "id": 34,
+      "zh": "时常忧心忡忡，担心很多事情",
+      "en": "Worries a lot."
+    },
+    {
+      "id": 35,
+      "zh": "重视艺术与审美",
+      "en": "Values art and beauty."
+    },
+    {
+      "id": 36,
+      "zh": "感觉自己很难对他人产生影响",
+      "en": "Finds it hard to influence people."
+    },
+    {
+      "id": 37,
+      "zh": "有时对人比较粗鲁",
+      "en": "Is sometimes rude to others."
+    },
+    {
+      "id": 38,
+      "zh": "有效率，做事有始有终",
+      "en": "Is efficient, gets things done."
+    },
+    {
+      "id": 39,
+      "zh": "时常觉得悲伤",
+      "en": "Often feels sad."
+    },
+    {
+      "id": 40,
+      "zh": "思想深刻",
+      "en": "Is complex, a deep thinker."
+    },
+    {
+      "id": 41,
+      "zh": "精力充沛",
+      "en": "Is full of energy."
+    },
+    {
+      "id": 42,
+      "zh": "不相信别人，怀疑别人的意图",
+      "en": "Is suspicious of others' intentions."
+    },
+    {
+      "id": 43,
+      "zh": "可靠的，总是值得他人信赖",
+      "en": "Is reliable, can always be counted on."
+    },
+    {
+      "id": 44,
+      "zh": "能够控制自己的情绪",
+      "en": "Keeps their emotions under control."
+    },
+    {
+      "id": 45,
+      "zh": "缺乏想象力",
+      "en": "Has difficulty imagining things."
+    },
+    {
+      "id": 46,
+      "zh": "爱说话，健谈",
+      "en": "Is talkative."
+    },
+    {
+      "id": 47,
+      "zh": "有时对人冷淡，漠不关心",
+      "en": "Can be cold and uncaring."
+    },
+    {
+      "id": 48,
+      "zh": "乱糟糟的，不爱收拾",
+      "en": "Leaves a mess, doesn't clean up."
+    },
+    {
+      "id": 49,
+      "zh": "很少觉得焦虑或者害怕",
+      "en": "Rarely feels anxious or afraid."
+    },
+    {
+      "id": 50,
+      "zh": "觉得诗歌、戏剧很无聊",
+      "en": "Thinks poetry and plays are boring."
+    },
+    {
+      "id": 51,
+      "zh": "更喜欢让别人来领头负责",
+      "en": "Prefers to have others take charge."
+    },
+    {
+      "id": 52,
+      "zh": "待人谦逊礼让",
+      "en": "Is polite, courteous to others."
+    },
+    {
+      "id": 53,
+      "zh": "有恒心，能坚持把事情做完",
+      "en": "Is persistent, works until the task is finished."
+    },
+    {
+      "id": 54,
+      "zh": "时常觉得郁郁寡欢",
+      "en": "Tends to feel depressed, blue."
+    },
+    {
+      "id": 55,
+      "zh": "对抽象的概念和想法没什么兴趣",
+      "en": "Has little interest in abstract ideas."
+    },
+    {
+      "id": 56,
+      "zh": "充满热情",
+      "en": "Shows a lot of enthusiasm."
+    },
+    {
+      "id": 57,
+      "zh": "把人往最好的方面想",
+      "en": "Assumes the best about people."
+    },
+    {
+      "id": 58,
+      "zh": "有时候会做出一些不负责任的行为",
+      "en": "Sometimes behaves irresponsibly."
+    },
+    {
+      "id": 59,
+      "zh": "情绪多变，容易愤怒",
+      "en": "Is temperamental, gets emotional easily."
+    },
+    {
+      "id": 60,
+      "zh": "有创意，能想出新点子",
+      "en": "Is original, comes up with new ideas."
+    }
+  ]
+}

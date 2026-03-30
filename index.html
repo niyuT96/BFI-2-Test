@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN" id="html-root">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>问卷调查</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f0f2f5;
+      color: #333;
+    }
+
+    header {
+      background: #1a73e8;
+      color: white;
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    header h1 { font-size: 1.3rem; font-weight: 600; }
+
+    #progress-info { font-size: 0.85rem; opacity: 0.9; white-space: nowrap; }
+
+    #progress-bar-wrap {
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+      height: 5px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: #fff;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    #lang-switcher {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .lang-btn {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.6);
+      background: transparent;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .lang-btn:hover { background: rgba(255,255,255,0.2); }
+    .lang-btn.active { background: white; color: #1a73e8; border-color: white; }
+
+    #gt-bar {
+      background: #fff8e1;
+      border-bottom: 1px solid #ffe082;
+      padding: 6px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: #6d4c00;
+    }
+
+    #gt-bar label { font-weight: 600; white-space: nowrap; }
+
+    #google_translate_element .goog-te-gadget-simple {
+      border: 1px solid #ffe082 !important;
+      border-radius: 6px !important;
+      padding: 2px 6px !important;
+      font-size: 0.8rem !important;
+    }
+
+    .goog-te-gadget { font-size: 0 !important; }
+    .goog-te-gadget > span { display: none; }
+
+    main {
+      max-width: 860px;
+      margin: 28px auto;
+      padding: 0 16px 120px;
+    }
+
+    .scale-legend {
+      background: white;
+      border-radius: 10px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      font-size: 0.82rem;
+      color: #555;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: box-shadow 0.2s;
+      border-left: 4px solid transparent;
+    }
+
+    .question-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+    .question-card.answered { border-left-color: #1a73e8; }
+    .question-card.unanswered-error { border-left-color: #e53935; }
+
+    .question-header {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .question-num {
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .question-text { font-size: 0.95rem; line-height: 1.6; }
+
+    .options {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .option-label { flex: 1; text-align: center; cursor: pointer; }
+    .option-label input[type="radio"] { display: none; }
+
+    .option-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 9px 4px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      background: #fafafa;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .option-btn:hover { border-color: #1a73e8; background: #e8f0fe; }
+
+    .option-label input:checked + .option-btn {
+      background: #1a73e8;
+      border-color: #1a73e8;
+      color: white;
+    }
+
+    .option-num { font-size: 1.05rem; font-weight: 700; line-height: 1; }
+
+    .option-desc {
+      font-size: 0.58rem;
+      line-height: 1.2;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    .option-label input:checked + .option-btn .option-desc { opacity: 0.9; }
+
+    footer-bar {
+      display: block;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+
+    #answered-count { font-size: 0.88rem; color: #666; }
+    #answered-count span { color: #1a73e8; font-weight: 700; }
+
+    .btn {
+      padding: 9px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    #submit-btn { background: #1a73e8; color: white; }
+    #submit-btn:hover { background: #1558b0; }
+    #reset-btn { background: #f1f3f4; color: #555; }
+    #reset-btn:hover { background: #e0e0e0; }
+
+    /* ── Result modal ── */
+    #result-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #result-modal.active { display: flex; }
+
+    #result-box {
+      background: white;
+      border-radius: 16px;
+      padding: 24px 24px 20px;
+      max-width: 680px;
+      width: 94%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    #result-box h2 { font-size: 1.2rem; margin-bottom: 10px; color: #1a73e8; }
+
+    .summary { font-size: 0.9rem; color: #444; margin-bottom: 14px; font-weight: 600; }
+
+    /* Disclaimer */
+    .disclaimer-box {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: #6d4c00;
+      margin-bottom: 18px;
+      line-height: 1.6;
+      display: flex;
+      gap: 8px;
+    }
+
+    .disclaimer-icon { flex-shrink: 0; font-size: 0.9rem; }
+
+    /* Section title */
+    .result-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #555;
+      margin: 18px 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #f0f0f0;
+      letter-spacing: 0.02em;
+    }
+
+    /* Radar chart */
+    .radar-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0 12px;
+    }
+
+    .radar-wrap > canvas { max-width: 300px; max-height: 300px; }
+
+    /* Domain card */
+    .domain-card {
+      border-radius: 10px;
+      border: 1px solid #e8e8e8;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .domain-header {
+      display: flex;
+      align-items: center;
+      padding: 11px 14px;
+      cursor: pointer;
+      gap: 10px;
+      background: white;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .domain-header:hover { background: #f8f9ff; }
+
+    .domain-color-tag {
+      width: 4px;
+      height: 36px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .domain-info { flex: 1; min-width: 0; }
+
+    .domain-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #222;
+    }
+
+    .domain-en-name {
+      font-size: 0.72rem;
+      color: #999;
+      margin-top: 1px;
+    }
+
+    .domain-score-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .domain-score-display {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .domain-score-label {
+      font-size: 0.65rem;
+      color: #aaa;
+    }
+
+    .toggle-icon {
+      font-size: 0.8rem;
+      color: #bbb;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .domain-card.expanded .toggle-icon { transform: rotate(90deg); }
+
+    /* POMP bar under header */
+    .domain-bar-row {
+      padding: 0 14px 4px 28px;
+      background: white;
+    }
+
+    .pomp-bar-wrap {
+      height: 5px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pomp-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+      width: 0%;
+    }
+
+    .domain-desc-row {
+      padding: 4px 14px 10px 28px;
+      background: white;
+      font-size: 0.71rem;
+      color: #999;
+      line-height: 1.6;
+    }
+
+    /* Facet list */
+    .facet-list {
+      display: none;
+      background: #fafafa;
+      border-top: 1px solid #f0f0f0;
+      padding: 10px 14px 6px 28px;
+    }
+
+    .domain-card.expanded .facet-list { display: block; }
+
+    .facet-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .facet-item:last-child { border-bottom: none; }
+
+    .facet-header-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .facet-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .facet-name {
+      flex: 1;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .facet-score {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .facet-bar-wrap {
+      height: 3px;
+      background: #e8e8e8;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      overflow: hidden;
+    }
+
+    .facet-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s ease 0.1s;
+      width: 0%;
+    }
+
+    .facet-desc {
+      font-size: 0.69rem;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .facet-desc span { font-weight: 600; color: #999; }
+
+    /* Toggle facet button */
+    .toggle-facet-btn {
+      display: inline-block;
+      margin: 4px 0 12px 28px;
+      padding: 4px 10px;
+      font-size: 0.72rem;
+      color: #1a73e8;
+      background: #e8f0fe;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+
+    .toggle-facet-btn:hover { background: #d2e3fc; }
+
+    .result-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+    #close-modal-btn { background: #1a73e8; color: white; }
+    #close-modal-btn:hover { background: #1558b0; }
+    #export-btn { background: #34a853; color: white; }
+    #export-btn:hover { background: #2d8f47; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="flex:1;min-width:0">
+    <h1 id="hdr-title">问卷调查</h1>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+  <div id="progress-info">
+    <span id="hdr-progress-label">已完成</span>
+    <span id="hdr-answered">0</span> / 60
+    <span id="hdr-progress-unit">题</span>
+  </div>
+  <div id="lang-switcher"></div>
+</header>
+
+<div id="gt-bar" style="display:none">
+  <label>🌐 Auto-translate via Google:</label>
+  <div id="google_translate_element"></div>
+  <small style="opacity:0.7">Note: machine translation may affect wording.</small>
+</div>
+
+<main id="question-list"></main>
+
+<footer-bar>
+  <div id="answered-count">
+    <span id="foot-answered-label">已作答：</span><span id="foot-answered">0</span> / 60
+    <span id="foot-unit">题</span>
+  </div>
+  <div style="display:flex;gap:10px">
+    <button class="btn" id="reset-btn">重置</button>
+    <button class="btn" id="submit-btn">提交问卷</button>
+  </div>
+</footer-bar>
+
+<div id="result-modal">
+  <div id="result-box">
+    <h2 id="result-title">问卷结果</h2>
+
+    <div class="disclaimer-box">
+      <span class="disclaimer-icon">&#9888;&#65039;</span>
+      <span id="result-disclaimer-text"></span>
+    </div>
+
+    <div class="result-section-title" id="domain-section-title"></div>
+    <div class="radar-wrap">
+      <canvas id="radar-chart" width="300" height="300"></canvas>
+    </div>
+
+    <div id="domains-container"></div>
+
+    <div class="result-actions">
+      <button class="btn" id="export-btn">导出 JSON</button>
+      <button class="btn" id="close-modal-btn">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+window.googleTranslateElementInit = function() {
+  new google.translate.TranslateElement(
+    { pageLanguage: 'zh', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
+    'google_translate_element'
+  );
+  document.getElementById('gt-bar').style.display = 'flex';
+};
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+const COLORS = ["#2e7d32", "#66bb6a", "#f9a825", "#ef6c00", "#c62828"];
+
+// ── POMP Domain / Facet Definitions ─────────────────────────────────────────
+// 5 domains × 3 facets × 4 questions = 60 questions
+// Question assignment:
+//   D1 Openness:        F1[2,13,43,50]  F2[25,28,36,54]  F3[12,18,47,59]
+//   D2 Conscientiousness: F4[3,6,26,39]  F5[9,17,42,52]   F6[14,29,44,49]
+//   D3 Extraversion:    F7[1,10,31,45]  F8[16,21,34,41]  F9[15,24,46,53]
+//   D4 Agreeableness:   F10[5,8,27,56]  F11[20,23,38,58] F12[30,32,48,51]
+//   D5 Wellbeing:       F13[4,19,33,40] F14[22,35,55,57] F15[7,11,37,60]
+
+const POMP_DOMAINS = [
+  {
+    id: "D1", color: "#7c4dff",
+    zh: "开放探索", en: "Openness",
+    desc: {
+      zh: {
+        high: "倾向于主动探索新知识与新体验，对陌生观点和环境保持开放心态",
+        low:  "倾向于专注在熟悉的领域，偏好稳定而非频繁变化的信息环境"
+      },
+      en: {
+        high: "Tends to actively seek new knowledge and experiences, remaining open to unfamiliar ideas",
+        low:  "Tends to focus on familiar domains, preferring stability over frequent novelty"
+      }
+    },
+    facets: [
+      {
+        id: "F1", questions: [10,25,40,55], reversed: [25,55],
+        zh: "求知好奇", en: "Curiosity",
+        desc: {
+          zh: { high: "对未知领域保持主动兴趣，乐于自发探索和学习", low: "更关注实际所需信息，较少主动搜寻新知识领域" },
+          en: { high: "Actively interested in new topics; enjoys self-directed learning", low: "Focuses on practically needed information; less drawn to unsolicited exploration" }
+        }
+      },
+      {
+        id: "F2", questions: [5,20,35,50], reversed: [5,50],
+        zh: "审美敏感", en: "Aesthetic Sensitivity",
+        desc: {
+          zh: { high: "对艺术、音乐、文学等审美体验有较强的感受力，重视生活中的美", low: "对艺术与审美体验关注较少，更注重实用性" },
+          en: { high: "Strongly appreciates art, music, and literature; finds beauty in everyday life", low: "Less attuned to aesthetic experiences; more focused on practical matters" }
+        }
+      },
+      {
+        id: "F3", questions: [15,30,45,60], reversed: [30,45],
+        zh: "创意想象", en: "Creative Imagination",
+        desc: {
+          zh: { high: "富有想象力和创造力，善于提出新颖的想法与解决方法", low: "倾向于脚踏实地，较少依赖想象力或创新思维" },
+          en: { high: "Imaginative and creative; generates novel ideas and inventive solutions", low: "Tends to be practical and conventional; less reliant on imagination or creative thinking" }
+        }
+      }
+    ]
+  },
+  {
+    id: "D2", color: "#1a73e8",
+    zh: "自律进取", en: "Conscientiousness",
+    desc: {
+      zh: {
+        high: "倾向有计划、有条理地行事，善于坚持目标与系统执行",
+        low:  "倾向更灵活自发的工作方式，较少依赖严格的计划和结构"
+      },
+      en: {
+        high: "Tends to act with planning and structure; excels at persistence and systematic execution",
+        low:  "Tends toward flexible and spontaneous work styles; less reliant on strict plans"
+      }
+    },
+    facets: [
+      {
+        id: "F4", questions: [3,18,33,48], reversed: [3,48],
+        zh: "计划条理", en: "Planning",
+        desc: {
+          zh: { high: "重视规律与计划，善于组织时间与长期事务", low: "偏好弹性安排，较少依赖固定计划和日程" },
+          en: { high: "Values routine and planning; skilled at organizing time and long-term tasks", low: "Prefers flexible arrangements; less reliant on fixed schedules" }
+        }
+      },
+      {
+        id: "F5", questions: [8,23,38,53], reversed: [8,23],
+        zh: "效率执行", en: "Productiveness",
+        desc: {
+          zh: { high: "做事高效持续，不易拖延，善于将目标转化为实际行动", low: "做事节奏较慢，有时难以启动任务或坚持到底" },
+          en: { high: "Works efficiently and persistently; rarely procrastinates and follows through on tasks", low: "Works at a slower pace; sometimes struggles to start or complete tasks" }
+        }
+      },
+      {
+        id: "F6", questions: [13,28,43,58], reversed: [28,58],
+        zh: "责任担当", en: "Responsibility",
+        desc: {
+          zh: { high: "可信赖、言出必行，行为举止稳重负责", low: "有时不够细心或负责，行为上偶尔较为随意" },
+          en: { high: "Dependable and reliable; acts in a responsible and trustworthy manner", low: "Sometimes less careful or responsible; occasionally acts impulsively or carelessly" }
+        }
+      }
+    ]
+  },
+  {
+    id: "D3", color: "#00acc1",
+    zh: "社交外向", en: "Extraversion",
+    desc: {
+      zh: {
+        high: "倾向于在社交互动中获得活力，喜欢群体环境与公开表达",
+        low:  "倾向于通过独处恢复精力，偏好一对一交流或独立工作"
+      },
+      en: {
+        high: "Tends to draw energy from social interaction; enjoys group settings and public expression",
+        low:  "Tends to recharge through solitude; prefers one-on-one interactions or solo work"
+      }
+    },
+    facets: [
+      {
+        id: "F7", questions: [1,16,31,46], reversed: [16,31],
+        zh: "社交自信", en: "Social Confidence",
+        desc: {
+          zh: { high: "在社交场合感到自在，乐于结识不同背景的人", low: "在大型社交场合可能感到消耗，偏好小范围或熟悉的互动" },
+          en: { high: "Feels at ease in social settings; enjoys meeting people from diverse backgrounds", low: "May find large social settings draining; prefers smaller or familiar interactions" }
+        }
+      },
+      {
+        id: "F8", questions: [6,21,36,51], reversed: [36,51],
+        zh: "影响表达", en: "Influence & Expression",
+        desc: {
+          zh: { high: "善于清晰表达想法，乐于承担领导或影响他人的角色", low: "倾向退居幕后，较少主动寻求领导地位或公开表达" },
+          en: { high: "Skilled at clear self-expression; enjoys leadership and influencing others", low: "Tends to stay in the background; less likely to seek leadership or public roles" }
+        }
+      },
+      {
+        id: "F9", questions: [11,26,41,56], reversed: [11,26],
+        zh: "精力活力", en: "Energy Level",
+        desc: {
+          zh: { high: "精力充沛、充满热情，经常感到兴奋和干劲十足", low: "精力水平较低，不如他人活跃，鲜少感到特别兴奋" },
+          en: { high: "Energetic and enthusiastic; often feels excited and full of drive", low: "Has lower energy levels; less active than others and rarely feels particularly excited" }
+        }
+      }
+    ]
+  },
+  {
+    id: "D4", color: "#43a047",
+    zh: "亲和宜人", en: "Agreeableness",
+    desc: {
+      zh: {
+        high: "倾向于重视和谐、合作与他人感受，表现出较高的同理心",
+        low:  "倾向于更直接、独立地行事，优先考虑个人判断而非集体共识"
+      },
+      en: {
+        high: "Tends to value harmony, cooperation, and others' feelings; demonstrates high empathy",
+        low:  "Tends to act more directly and independently; prioritizes personal judgment over consensus"
+      }
+    },
+    facets: [
+      {
+        id: "F10", questions: [2,17,32,47], reversed: [17,47],
+        zh: "共情助人", en: "Empathy & Helping",
+        desc: {
+          zh: { high: "对他人感受高度敏感，乐于主动提供支持与帮助", low: "对他人情绪的关注较少集中，更侧重逻辑与任务导向" },
+          en: { high: "Highly attuned to others' feelings; proactively offers support and help", low: "Less focused on others' emotions; more oriented toward logic and tasks" }
+        }
+      },
+      {
+        id: "F11", questions: [7,22,37,52], reversed: [22,37],
+        zh: "谦恭礼让", en: "Respectfulness",
+        desc: {
+          zh: { high: "待人温和有礼，以尊重的态度与他人相处，善于避免冲突", low: "人际交往中有时较为强硬，可能与他人发生争论或言语失当" },
+          en: { high: "Gentle and courteous; treats others with respect and avoids unnecessary conflict", low: "Can be assertive or blunt in interactions; occasionally argumentative or rude" }
+        }
+      },
+      {
+        id: "F12", questions: [12,27,42,57], reversed: [12,42],
+        zh: "信任包容", en: "Trust",
+        desc: {
+          zh: { high: "对他人持善意与信任，宽容大量，愿意相信他人的好意", low: "对他人意图较为警惕，不轻易信任，倾向从批判角度看待他人" },
+          en: { high: "Trusting and forgiving; assumes good intentions in others and gives the benefit of the doubt", low: "More guarded and skeptical; tends to question others' intentions rather than assume goodwill" }
+        }
+      }
+    ]
+  },
+  {
+    id: "D5", color: "#fb8c00",
+    zh: "情绪健康", en: "Emotional Wellbeing",
+    desc: {
+      zh: {
+        high: "目前报告较高的情绪稳定性、积极展望与整体生活满意度",
+        low:  "目前报告较多情绪波动，或对当前生活状态的满意度相对较低"
+      },
+      en: {
+        high: "Currently reports higher emotional stability, positive outlook, and overall life satisfaction",
+        low:  "Currently reports more emotional variability or relatively lower life satisfaction"
+      }
+    },
+    facets: [
+      {
+        id: "F13", questions: [4,19,34,49], reversed: [19,34],
+        zh: "平静无忧", en: "Calmness",
+        desc: {
+          zh: { high: "在压力下保持从容平静，不易感到紧张或长期忧虑", low: "在压力下容易感到紧张或忧虑，情绪调节需要更多时间" },
+          en: { high: "Remains calm under pressure; rarely feels tense or chronically worried", low: "Tends to feel tense or worried under pressure; emotional regulation takes more effort" }
+        }
+      },
+      {
+        id: "F14", questions: [9,24,39,54], reversed: [39,54],
+        zh: "心理韧性", en: "Resilience",
+        desc: {
+          zh: { high: "遭遇挫折后能积极复原，对自己和未来持有安全感与乐观态度", low: "在挫折后恢复较慢，有时会感到悲伤或情绪持续低落" },
+          en: { high: "Bounces back from setbacks with optimism; feels secure and positive about oneself and the future", low: "Slower to recover from setbacks; may experience sadness or prolonged low mood" }
+        }
+      },
+      {
+        id: "F15", questions: [14,29,44,59], reversed: [14,59],
+        zh: "情绪调节", en: "Emotional Regulation",
+        desc: {
+          zh: { high: "情绪稳定、自我调节能力强，不易因外界刺激引发强烈波动", low: "情绪较为敏感，容易因外界刺激而出现明显的情绪起伏" },
+          en: { high: "Emotionally stable and self-regulated; not easily triggered into strong emotional reactions", low: "More emotionally reactive; prone to mood swings in response to external events" }
+        }
+      }
+    ]
+  }
+];
+
+// ── Global state ─────────────────────────────────────────────────────────────
+let radarChart = null;
+let currentLang = "zh";
+let uiStrings = {};
+let allQuestions = [];
+let scores = JSON.parse(localStorage.getItem("bfi2_scores") || "{}");
+
+// ── Load JSON and bootstrap ──────────────────────────────────────────────────
+async function loadQuestions() {
+  let data;
+  try {
+    const res = await fetch("questions.json");
+    data = await res.json();
+  } catch {
+    alert("Cannot load questions.json. Make sure the file is in the same folder.");
+    return;
+  }
+
+  const switcher = document.getElementById("lang-switcher");
+  data.languages.forEach(lang => {
+    const btn = document.createElement("button");
+    btn.className = "lang-btn" + (lang.code === currentLang ? " active" : "");
+    btn.textContent = lang.label;
+    btn.dataset.lang = lang.code;
+    btn.addEventListener("click", () => switchLang(lang.code, data));
+    switcher.appendChild(btn);
+  });
+
+  allQuestions = data.questions;
+  uiStrings = data.ui;
+
+  applyUI(currentLang);
+  renderQuestions(data.questions, currentLang);
+  updateProgress();
+}
+
+// ── Switch language ──────────────────────────────────────────────────────────
+function switchLang(lang, data) {
+  currentLang = lang;
+  document.getElementById("html-root").lang = lang === "zh" ? "zh-CN" : lang;
+  document.querySelectorAll(".lang-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.lang === lang);
+  });
+  applyUI(lang);
+  const container = document.getElementById("question-list");
+  container.innerHTML = "";
+  renderQuestions(data ? data.questions : allQuestions, lang);
+  updateProgress();
+}
+
+// ── Apply UI strings ─────────────────────────────────────────────────────────
+function applyUI(lang) {
+  const t = uiStrings[lang];
+  if (!t) return;
+  document.title = t.title;
+  document.getElementById("hdr-title").textContent = t.title;
+  document.getElementById("hdr-progress-label").textContent = t.progress + " ";
+  document.getElementById("hdr-progress-unit").textContent = " " + t.progressOf;
+  document.getElementById("foot-answered-label").textContent = t.answered;
+  document.getElementById("foot-unit").textContent = " " + t.progressOf;
+  document.getElementById("reset-btn").textContent = t.reset;
+  document.getElementById("submit-btn").textContent = t.submit;
+  document.getElementById("result-title").textContent = t.resultTitle;
+  document.getElementById("export-btn").textContent = t.exportBtn;
+  document.getElementById("close-modal-btn").textContent = t.closeBtn;
+}
+
+// ── Render questions ─────────────────────────────────────────────────────────
+function renderQuestions(questions, lang) {
+  const t = uiStrings[lang];
+  const container = document.getElementById("question-list");
+
+  const legend = document.createElement("div");
+  legend.className = "scale-legend";
+  legend.innerHTML = `<strong style="margin-right:4px">${t.legend}</strong>` +
+    t.scale.map((l, i) =>
+      `<span class="legend-item">
+        <span class="legend-dot" style="background:${COLORS[i]}">${i+1}</span>${l}
+      </span>`
+    ).join("");
+  container.appendChild(legend);
+
+  questions.forEach(q => {
+    const text = q[lang] || q["zh"];
+    const card = document.createElement("div");
+    card.className = "question-card" + (scores[q.id] ? " answered" : "");
+    card.id = `card-${q.id}`;
+    card.innerHTML = `
+      <div class="question-header">
+        <span class="question-num">${q.id}</span>
+        <span class="question-text">${text}</span>
+      </div>
+      <div class="options">
+        ${[1,2,3,4,5].map(v => `
+          <label class="option-label">
+            <input type="radio" name="q${q.id}" value="${v}" ${scores[q.id] === v ? "checked" : ""}>
+            <div class="option-btn">
+              <span class="option-num">${v}</span>
+              <span class="option-desc">${t.scale[v-1]}</span>
+            </div>
+          </label>
+        `).join("")}
+      </div>
+    `;
+    card.querySelectorAll("input[type=radio]").forEach(radio => {
+      radio.addEventListener("change", () => {
+        scores[q.id] = parseInt(radio.value);
+        localStorage.setItem("bfi2_scores", JSON.stringify(scores));
+        card.classList.add("answered");
+        card.classList.remove("unanswered-error");
+        updateProgress();
+      });
+    });
+    container.appendChild(card);
+  });
+}
+
+// ── Progress ─────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const count = Object.keys(scores).length;
+  document.getElementById("hdr-answered").textContent = count;
+  document.getElementById("foot-answered").textContent = count;
+  document.getElementById("progress-bar").style.width = (count / 60 * 100) + "%";
+}
+
+// ── POMP Calculation ──────────────────────────────────────────────────────────
+// Scale: 1=Disagree strongly (min trait), 5=Agree strongly (max trait)
+// Forward items: score = raw answer; Reversed items: score = 6 - raw answer
+// POMP = (adjustedSum - n) / (4 * n) * 100  → range [0, 100] per BFI-2 standard
+function calcPOMP(questionIds, reversedIds = []) {
+  const n = questionIds.length;
+  const reversedSet = new Set(reversedIds);
+  const adjustedSum = questionIds.reduce((s, id) => {
+    return s + (reversedSet.has(id) ? 6 - scores[id] : scores[id]);
+  }, 0);
+  return Math.round((adjustedSum - n) / (4 * n) * 100);
+}
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+document.getElementById("submit-btn").addEventListener("click", () => {
+  const t = uiStrings[currentLang];
+  const answered = Object.keys(scores).length;
+  for (let i = 1; i <= 60; i++) {
+    const card = document.getElementById(`card-${i}`);
+    if (!scores[i]) card.classList.add("unanswered-error");
+  }
+  if (answered < 60) {
+    document.querySelector(".unanswered-error")?.scrollIntoView({behavior: "smooth", block: "center"});
+    alert(t.alertIncomplete.replace("{n}", 60 - answered));
+    return;
+  }
+  showResult();
+});
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+document.getElementById("reset-btn").addEventListener("click", () => {
+  const t = uiStrings[currentLang];
+  if (!confirm(t.confirmReset)) return;
+  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+  for (const key in scores) delete scores[key];
+  localStorage.removeItem("bfi2_scores");
+  document.querySelectorAll(".question-card").forEach(c => {
+    c.classList.remove("answered", "unanswered-error");
+  });
+  updateProgress();
+});
+
+// ── Show Result ───────────────────────────────────────────────────────────────
+function showResult() {
+  const t = uiStrings[currentLang];
+  const L = currentLang;
+
+  // 1. Disclaimer
+  document.getElementById("result-disclaimer-text").textContent = t.resultDisclaimer;
+
+  // 2. Domain section title
+  document.getElementById("domain-section-title").textContent = t.domainSectionTitle;
+
+  // 4. Compute per-domain and per-facet POMP
+  const domainData = POMP_DOMAINS.map(d => {
+    const facetData = d.facets.map(f => ({
+      ...f,
+      pomp: calcPOMP(f.questions, f.reversed)
+    }));
+    const domainQIds = d.facets.flatMap(f => f.questions);
+    const domainReversed = d.facets.flatMap(f => f.reversed);
+    return { ...d, pomp: calcPOMP(domainQIds, domainReversed), facetData };
+  });
+
+  // 5. Radar chart
+  if (radarChart) { radarChart.destroy(); radarChart = null; }
+  const ctx = document.getElementById("radar-chart").getContext("2d");
+  radarChart = new Chart(ctx, {
+    type: "radar",
+    data: {
+      labels: domainData.map(d => d[L]),
+      datasets: [{
+        data: domainData.map(d => d.pomp),
+        backgroundColor: "rgba(26,115,232,0.08)",
+        borderColor: "#1a73e8",
+        borderWidth: 2,
+        pointBackgroundColor: domainData.map(d => d.color),
+        pointBorderColor: "#fff",
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      animation: { duration: 600 },
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { stepSize: 25, font: { size: 10 }, color: "#aaa", backdropColor: "transparent" },
+          grid: { color: "#e8e8e8" },
+          angleLines: { color: "#e8e8e8" },
+          pointLabels: { font: { size: 11, weight: "600" }, color: "#555" }
+        }
+      },
+      maintainAspectRatio: true,
+      aspectRatio: 1,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // 6. Domain cards
+  const container = document.getElementById("domains-container");
+  container.innerHTML = "";
+
+  domainData.forEach(d => {
+    const card = document.createElement("div");
+    card.className = "domain-card";
+
+    const pompColor = d.color;
+    const descHigh = d.desc[L].high;
+    const descLow  = d.desc[L].low;
+
+    card.innerHTML = `
+      <div class="domain-header">
+        <div class="domain-color-tag" style="background:${pompColor}"></div>
+        <div class="domain-info">
+          <div class="domain-name">${d[L]}</div>
+          <div class="domain-en-name">${L === "zh" ? d.en : d.zh}</div>
+        </div>
+        <div class="domain-score-col">
+          <div class="domain-score-display" style="color:${pompColor}">${d.pomp}</div>
+          <div class="domain-score-label">/ 100</div>
+        </div>
+        <span class="toggle-icon">&#9658;</span>
+      </div>
+      <div class="domain-bar-row">
+        <div class="pomp-bar-wrap">
+          <div class="pomp-bar" style="background:${pompColor}" data-width="${d.pomp}"></div>
+        </div>
+      </div>
+      <div class="domain-desc-row">
+        <span style="font-weight:600;color:#888">${t.highScoreLabel}</span>${descHigh}<br>
+        <span style="font-weight:600;color:#888">${t.lowScoreLabel}</span>${descLow}
+      </div>
+      <button class="toggle-facet-btn">${t.expandFacets}</button>
+      <div class="facet-list">
+        ${d.facetData.map(f => {
+          const fDescHigh = f.desc[L].high;
+          const fDescLow  = f.desc[L].low;
+          return `
+            <div class="facet-item">
+              <div class="facet-header-row">
+                <div class="facet-dot" style="background:${pompColor}"></div>
+                <div class="facet-name">${f[L]}</div>
+                <div class="facet-score" style="color:${pompColor}">${f.pomp}</div>
+              </div>
+              <div class="facet-bar-wrap">
+                <div class="facet-bar" style="background:${pompColor}" data-width="${f.pomp}"></div>
+              </div>
+              <div class="facet-desc">
+                <span>${t.highScoreLabel}</span>${fDescHigh}<br>
+                <span>${t.lowScoreLabel}</span>${fDescLow}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+
+    // Toggle facet expand/collapse
+    const toggleBtn = card.querySelector(".toggle-facet-btn");
+    toggleBtn.addEventListener("click", () => {
+      const expanded = card.classList.toggle("expanded");
+      toggleBtn.textContent = expanded ? t.collapseFacets : t.expandFacets;
+      // Animate facet bars when first expanded
+      if (expanded) {
+        card.querySelectorAll(".facet-bar").forEach(bar => {
+          bar.style.width = bar.dataset.width + "%";
+        });
+      }
+    });
+
+    container.appendChild(card);
+  });
+
+  document.getElementById("result-modal").classList.add("active");
+
+  // Animate domain bars after modal is visible
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".pomp-bar").forEach(bar => {
+        bar.style.width = bar.dataset.width + "%";
+      });
+    });
+  });
+}
+
+// ── Close modal ───────────────────────────────────────────────────────────────
+document.getElementById("close-modal-btn").addEventListener("click", () => {
+  document.getElementById("result-modal").classList.remove("active");
+});
+
+document.getElementById("result-modal").addEventListener("click", e => {
+  if (e.target === document.getElementById("result-modal"))
+    document.getElementById("result-modal").classList.remove("active");
+});
+
+// ── Export ────────────────────────────────────────────────────────────────────
+document.getElementById("export-btn").addEventListener("click", () => {
+  const t = uiStrings[currentLang];
+
+  // Raw scores
+  const raw = {};
+  for (let i = 1; i <= 60; i++) raw[i] = scores[i];
+
+  // POMP scores
+  const pomp = {};
+  const L = currentLang;
+  POMP_DOMAINS.forEach(d => {
+    const domainQIds = d.facets.flatMap(f => f.questions);
+    const domainReversed = d.facets.flatMap(f => f.reversed);
+    pomp[d.id] = {
+      name: L === "zh" ? d.zh : d.en,
+      pomp: calcPOMP(domainQIds, domainReversed),
+      facets: Object.fromEntries(d.facets.map(f => [
+        f.id, { name: L === "zh" ? f.zh : f.en, pomp: calcPOMP(f.questions, f.reversed) }
+      ]))
+    };
+  });
+
+  const output = { domains: pomp, raw_scores: raw };
+  const blob = new Blob([JSON.stringify(output, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = t.exportFile;
+  a.click();
+});
+
+loadQuestions();
+</script>
+</body>
+</html>
