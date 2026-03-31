@@ -642,24 +642,6 @@
     <div id="google_translate_element"></div>
     <select id="custom-lang-select">
       <option value="">— Select language —</option>
-      <option value="en">English</option>
-      <option value="es">Spanish</option>
-      <option value="fr">French</option>
-      <option value="de">German</option>
-      <option value="it">Italian</option>
-      <option value="pt">Portuguese</option>
-      <option value="ru">Russian</option>
-      <option value="nl">Dutch</option>
-      <option value="pl">Polish</option>
-      <option value="tr">Turkish</option>
-      <option value="ar">Arabic</option>
-      <option value="hi">Hindi</option>
-      <option value="ja">Japanese</option>
-      <option value="ko">Korean</option>
-      <option value="th">Thai</option>
-      <option value="vi">Vietnamese</option>
-      <option value="id">Indonesian</option>
-      <option value="ms">Malay</option>
     </select>
     <small style="opacity:0.7">Note: machine translation may affect wording.</small>
   </div>
@@ -707,6 +689,17 @@
         'google_translate_element'
       );
       document.getElementById('gt-bar').style.display = 'flex';
+
+      // Populate language options using browser locale
+      const langCodes = ['en','es','fr','de','it','pt','ru','nl','pl','tr','ar','hi','ja','ko','th','vi','id','ms'];
+      const displayNames = new Intl.DisplayNames([navigator.language], { type: 'language' });
+      const select = document.getElementById('custom-lang-select');
+      langCodes.forEach(code => {
+        const opt = document.createElement('option');
+        opt.value = code;
+        opt.textContent = displayNames.of(code);
+        select.appendChild(opt);
+      });
 
       document.getElementById('custom-lang-select').addEventListener('change', function () {
         const lang = this.value;
