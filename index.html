@@ -103,17 +103,13 @@
       white-space: nowrap;
     }
 
-    #custom-lang-select {
-      padding: 3px 8px;
-      border: 1px solid #ffe082;
-      border-radius: 6px;
-      background: #fff;
-      color: #6d4c00;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
 
-    #google_translate_element { display: none; }
+    #google_translate_element .goog-te-gadget-simple {
+      border: 1px solid #ffe082 !important;
+      border-radius: 6px !important;
+      padding: 2px 6px !important;
+      font-size: 0.8rem !important;
+    }
 
     .goog-te-gadget { font-size: 0 !important; }
 
@@ -640,9 +636,6 @@
   <div id="gt-bar" style="display:none">
     <label>🌐 Auto-translate via Google:</label>
     <div id="google_translate_element"></div>
-    <select id="custom-lang-select">
-      <option value="">— Select language —</option>
-    </select>
     <small style="opacity:0.7">Note: machine translation may affect wording.</small>
   </div>
 
@@ -690,31 +683,17 @@
       );
       document.getElementById('gt-bar').style.display = 'flex';
 
-      // Populate language options using browser locale
-      const langCodes = ['en','es','fr','de','it','pt','ru','nl','pl','tr','ar','hi','ja','ko','th','vi','id','ms'];
-      const displayNames = new Intl.DisplayNames([navigator.language], { type: 'language' });
-      const select = document.getElementById('custom-lang-select');
-      langCodes.forEach(code => {
-        const opt = document.createElement('option');
-        opt.value = code;
-        opt.textContent = displayNames.of(code);
-        select.appendChild(opt);
-      });
-
-      document.getElementById('custom-lang-select').addEventListener('change', function () {
-        const lang = this.value;
-        if (!lang) return;
-        const tryTrigger = () => {
-          const gtSelect = document.querySelector('.goog-te-combo');
-          if (gtSelect) {
-            gtSelect.value = lang;
-            gtSelect.dispatchEvent(new Event('change'));
-          } else {
-            setTimeout(tryTrigger, 150);
-          }
-        };
-        tryTrigger();
-      });
+      // Relabel .goog-te-combo options using browser locale via Intl.DisplayNames
+      const relabelOptions = () => {
+        const gtSelect = document.querySelector('.goog-te-combo');
+        if (!gtSelect) { setTimeout(relabelOptions, 150); return; }
+        const displayNames = new Intl.DisplayNames([navigator.language], { type: 'language' });
+        gtSelect.querySelectorAll('option').forEach(opt => {
+          if (!opt.value) return;
+          try { opt.textContent = displayNames.of(opt.value); } catch (e) {}
+        });
+      };
+      relabelOptions();
     };
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
