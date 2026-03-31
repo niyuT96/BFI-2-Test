@@ -87,35 +87,6 @@
       border-color: white;
     }
 
-    #gt-bar {
-      background: #fff8e1;
-      border-bottom: 1px solid #ffe082;
-      padding: 6px 32px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.82rem;
-      color: #6d4c00;
-    }
-
-    #gt-bar label {
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-
-    #google_translate_element .goog-te-gadget-simple {
-      border: 1px solid #ffe082 !important;
-      border-radius: 6px !important;
-      padding: 2px 6px !important;
-      font-size: 0.8rem !important;
-    }
-
-    .goog-te-gadget { font-size: 0 !important; }
-
-    .goog-te-gadget > span { display: none;
-    }
-
     main {
       max-width: 860px;
       margin: 28px auto;
@@ -633,12 +604,6 @@
     <div id="lang-switcher"></div>
   </header>
 
-  <div id="gt-bar" style="display:none">
-    <label>🌐 Auto-translate via Google:</label>
-    <div id="google_translate_element"></div>
-    <small style="opacity:0.7">Note: machine translation may affect wording.</small>
-  </div>
-
   <main id="question-list"></main>
 
   <footer-bar>
@@ -675,28 +640,6 @@
     </div>
   </div>
 
-  <script>
-    window.googleTranslateElementInit = function () {
-      new google.translate.TranslateElement(
-        { pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
-        'google_translate_element'
-      );
-      document.getElementById('gt-bar').style.display = 'flex';
-
-      // Relabel .goog-te-combo options using browser locale via Intl.DisplayNames
-      const relabelOptions = () => {
-        const gtSelect = document.querySelector('.goog-te-combo');
-        if (!gtSelect) { setTimeout(relabelOptions, 150); return; }
-        const displayNames = new Intl.DisplayNames([navigator.language], { type: 'language' });
-        gtSelect.querySelectorAll('option').forEach(opt => {
-          if (!opt.value) return;
-          try { opt.textContent = displayNames.of(opt.value); } catch (e) {}
-        });
-      };
-      relabelOptions();
-    };
-  </script>
-  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <script>
